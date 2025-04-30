@@ -2,7 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 // import javax.swing.border.Border;
-//https://www.youtube.com/watch?v=vXcI_XI-Eww&list=PLnKe36F30Y4Y1XQOqNsL9Fgg_p6nYhcng&index=12
+import javax.swing.border.Border;
 
 public class Sudoku {
     class Tile extends JButton{
@@ -48,6 +48,8 @@ public class Sudoku {
     JPanel boardPanel = new JPanel();
     JPanel buttonsPanel = new JPanel();
     JButton numSelected = null;
+    JButton checkButton = new JButton("Check Answers");
+    
     int errors = 0;
     Sudoku() {
         frame.setSize(boardWidth,boardHeight);
@@ -70,6 +72,8 @@ public class Sudoku {
         buttonsPanel.setLayout(new GridLayout(1,9));
         setupButtons();
         frame.add(buttonsPanel,BorderLayout.SOUTH);
+        checkButton.addActionListener(e -> checkAnswers());
+        frame.add(checkButton,BorderLayout.EAST);
         frame.setVisible(true);
 
     }
@@ -151,4 +155,33 @@ public class Sudoku {
 
         }
     }
+    void checkAnswers() {
+        Component[] components = boardPanel.getComponents();
+        int index = 0;
+        boolean allCorrect = true;
+    
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                Tile tile = (Tile) components[index++];
+                String userInput = tile.getText();
+                char correctChar = solution[r].charAt(c);
+    
+                if (!tile.isEnabled()) continue; // skip original clues
+    
+                if (!userInput.equals(String.valueOf(correctChar))) {
+                    tile.setBackground(Color.RED); // wrong
+                    allCorrect = false;
+                } else {
+                    tile.setBackground(Color.GREEN); // right
+                }
+            }
+        }
+    
+        if (allCorrect) {
+            textLabel.setText("You solved it!");
+        } else {
+            textLabel.setText("Some answers are incorrect");
+        }
+    }
+    
 }
