@@ -47,6 +47,8 @@ public class Sudoku {
     JPanel textPanel = new JPanel();
     JPanel boardPanel = new JPanel();
     JPanel buttonsPanel = new JPanel();
+    JButton numSelected = null;
+    int errors = 0;
     Sudoku() {
         frame.setSize(boardWidth,boardHeight);
         frame.setResizable(true);
@@ -102,6 +104,29 @@ public class Sudoku {
                 tile.setFocusable(false);
                 boardPanel.add(tile);
 
+                tile.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e){
+                        Tile tile= (Tile) e.getSource();
+                        int r = tile.r;
+                        int c = tile.c;
+                        if(numSelected !=null){
+                            if(tile.getText()!=""){
+                                return ;
+                            }
+                            String numSelectedText = numSelected.getText();
+                            String tileSolution = String.valueOf(solution[r].charAt(c));
+                            if(tileSolution.equals(numSelectedText)){
+                                tile.setText(numSelectedText);
+                            }
+                            else{
+                                errors+=1;
+                                textLabel.setText("Sudoku: "+String.valueOf(errors));
+                            }
+
+                        }
+                    }
+                });
+
             }
         }
     }
@@ -113,7 +138,17 @@ public class Sudoku {
             button.setFocusable(false);
             button.setBackground(Color.white);
             buttonsPanel.add(button);
+            button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e){
+                    JButton button =(JButton) e.getSource();
+                    if(numSelected !=null){
+                        numSelected.setBackground(Color.white);
+                    }
+                    numSelected = button;
+                    numSelected.setBackground(Color.lightGray);
+                }
+            });
+
         }
     }
-
 }
